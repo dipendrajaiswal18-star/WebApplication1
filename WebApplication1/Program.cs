@@ -30,7 +30,7 @@ objFileServer.DefaultFilesOptions.DefaultFileNames.Add("MyPage.html");
 //app.UseDefaultFiles(obj);
 //app.UseStaticFiles();
 
-app.UseFileServer(objFileServer);
+//app.UseFileServer(objFileServer);
 
 
 app.UseHttpsRedirection();
