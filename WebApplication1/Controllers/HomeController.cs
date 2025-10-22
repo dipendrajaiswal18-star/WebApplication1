@@ -6,20 +6,28 @@ namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IGuidService _guidService;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IGuidService guidService, ILogger<HomeController> logger)
         {
+            _guidService = guidService;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
+            var guid = _guidService.GetGuid();
+            _logger.LogInformation("Home - Guid from GuidService: {Guid}", guid);
+            ViewBag.Guid = guid;
             return View();
         }
 
         public IActionResult Privacy()
         {
+            var guid = _guidService.GetGuid();
+            _logger.LogInformation("Privacy - Guid from GuidService: {Guid}", guid);
+            ViewBag.Guid = guid;
             return View();
         }
 

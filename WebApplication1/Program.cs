@@ -1,15 +1,22 @@
 using Microsoft.AspNetCore.Http;
 using WebApplication1;
+using WebApplication1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var config= builder.Configuration;
 
 // Add services to the container.
-//builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews();
+
+//configue DI for GuidService
+//builder.Services.AddSingleton<IGuidService, GuidService>();
+builder.Services.AddSingleton<IGuidService, GuidService2>();
+//builder.Services.AddTransient<IGuidService, GuidService>();
+//builder.Services.AddScoped<IGuidService, GuidService>();
 
 var app = builder.Build();
-builder.Services.AddLogging();
+//builder.Services.AddLogging();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -69,16 +76,16 @@ app.UseRouting();
 
 app.MapStaticAssets();
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}")
-//    .WithStaticAssets();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
-app.Run(async (context) => {
-    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    logger.LogInformation("logging test ");
-    //await context.Response.WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
-    await context.Response.WriteAsync(config["myconfig"]);
-});
+//app.Run(async (context) => {
+//    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+//    logger.LogInformation("logging test ");
+//    //await context.Response.WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+//    await context.Response.WriteAsync(config["myconfig"]);
+//});
 
 app.Run();
