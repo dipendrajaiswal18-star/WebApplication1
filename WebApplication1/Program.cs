@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Http;
+using WebApplication1;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var config= builder.Configuration;
 
 // Add services to the container.
 //builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+builder.Services.AddLogging();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -26,6 +32,9 @@ if (!app.Environment.IsDevelopment())
 
 //app.UseFileServer(fileServerOptions);
 
+//app.UseMiddleware<RequestTracingMiddleware>();
+
+app.UseRequestTracingMiddleware();
 
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -66,7 +75,10 @@ app.MapStaticAssets();
 //    .WithStaticAssets();
 
 app.Run(async (context) => {
-    await context.Response.WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("logging test ");
+    //await context.Response.WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+    await context.Response.WriteAsync(config["myconfig"]);
 });
 
 app.Run();
