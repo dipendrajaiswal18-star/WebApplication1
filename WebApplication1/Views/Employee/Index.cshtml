@@ -1,0 +1,58 @@
+﻿@model List<Employee>
+
+
+@{
+    //1- using ViewData
+    // var title = ViewData["Title"];
+    // var employees = ViewData["Employees"] as List<WebApplication1.Models.Employee>;
+
+    //2- using ViewBag
+    var title = ViewBag.Title;
+    //var employees = ViewBag.Employees as List<WebApplication1.Models.Employee>;
+
+    //3- using Model
+    var employees = Model;
+}
+
+<div>
+    <h2>@title</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Salary</th>
+                <th>Details</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>@employee.Id</td>
+                    <td>@employee.Name</td>
+                    <td>@employee.Department</td>
+                    <td>@employee.Salary</td>
+                    <td>
+                       @*  // Using tag helpers to create a link to the Details action *@
+                         <a asp-controller="Employee" asp-action="Details" asp-route-id="@employee.Id">Details</a>
+                        @* //url helper way to create a link *@
+                        <a href="@Url.Action("Details", "Employee", new { id = employee.Id })">Url helper Details</a>
+                        @* //html helper way to create a link *@
+                        @Html.ActionLink("Html helper Details", "Details", "Employee", new { id = employee.Id }, null)
+                       @*  //manual way to create a link *@
+                        <a href="/Employee/Details/@employee.Id">"Manual Details</a>
+
+                     </td>
+                       <td>
+                        <a asp-controller="Employee" asp-action="Edit" asp-route-id="@employee.Id">Edit</a>
+                    </td>
+                </tr>
+            }
+
+            @Html.ActionLink("Create", "Create", new { /* id = Model.PrimaryKey */ }) |
+        </tbody>
+
+</div>

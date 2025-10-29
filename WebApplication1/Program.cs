@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1;
 using WebApplication1.Models;
 
@@ -8,6 +9,7 @@ var config= builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<AppDbContext>(option => option.UseInMemoryDatabase("EmployeeDb"));
 
 //configue DI for GuidService
 //builder.Services.AddSingleton<IGuidService, GuidService>();
@@ -17,6 +19,21 @@ builder.Services.AddSingleton<IGuidService, GuidService2>();
 
 var app = builder.Build();
 //builder.Services.AddLogging();
+
+//seed data
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    if (!dbContext.Employees.Any())
+    {
+        dbContext.Employees.AddRange(
+            new Employee { Id = 1, Name = "Alice", Department = "HR", Salary = 60000 },
+            new Employee { Id = 2, Name = "Bob", Department = "IT", Salary = 75000 },
+            new Employee { Id = 3, Name = "Charlie", Department = "Finance", Salary = 70000 }
+        );
+        dbContext.SaveChanges();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
